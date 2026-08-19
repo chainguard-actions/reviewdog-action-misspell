@@ -1,0 +1,32 @@
+name: Test UK locale - colour is not a misspelling
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      # Create a file with UK English spelling inside the workspace
+      - name: Create file with UK English spelling
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/test-uk"
+          echo "The colour of the sky is blue." > "$GITHUB_WORKSPACE/test-uk/uk.txt"
+          echo "The honour of the team is important." >> "$GITHUB_WORKSPACE/test-uk/uk.txt"
+
+      - name: Run action with UK locale (colour should not be flagged)
+        id: action
+        uses: .
+        with:
+          github_token: ${{ github.token }}
+          locale: UK
+          path: test-uk
+          pattern: '*.txt'
+          reporter: local
+          filter_mode: nofilter
+          fail_level: error
+          level: error
+
+      - name: Assert UK locale accepted colour as correct spelling
+        run: |
+          echo "PASS: UK locale accepted 'colour' and 'honour' as correct spellings"

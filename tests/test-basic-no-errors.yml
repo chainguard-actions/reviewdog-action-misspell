@@ -1,0 +1,33 @@
+name: Test basic usage - no misspellings
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: dummy-token
+      GITHUB_EVENT_NAME: push
+      GITHUB_REF: refs/heads/main
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Create test file with correct spelling
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/test-clean"
+          echo "This is a correctly spelled document." > "$GITHUB_WORKSPACE/test-clean/clean.txt"
+          echo "Everything looks good here." >> "$GITHUB_WORKSPACE/test-clean/clean.txt"
+
+      - id: action
+        uses: .
+        with:
+          github_token: dummy-token
+          path: test-clean
+          reporter: local
+          filter_mode: nofilter
+          fail_level: error
+          level: error
+
+      - name: Assert action succeeded
+        run: |
+          echo "Action completed successfully with no misspellings"
+          echo "PASS"

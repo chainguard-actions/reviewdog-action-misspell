@@ -1,0 +1,36 @@
+name: Test pattern filtering - only scan matching files
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: dummy-token
+      GITHUB_EVENT_NAME: push
+      GITHUB_REF: refs/heads/main
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Create test files - one with misspelling (txt), one clean (md)
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/test-pattern"
+          # This .txt file has a misspelling but we will only scan .md files
+          echo "Determinisitic result is important." > "$GITHUB_WORKSPACE/test-pattern/bad.txt"
+          # This .md file is clean
+          echo "This markdown file is correctly spelled." > "$GITHUB_WORKSPACE/test-pattern/clean.md"
+
+      - id: action
+        uses: .
+        with:
+          github_token: dummy-token
+          path: test-pattern
+          pattern: "*.md"
+          reporter: local
+          filter_mode: nofilter
+          fail_level: any
+          level: error
+
+      - name: Assert action succeeded by only scanning md files
+        run: |
+          echo "Action completed successfully - only .md files were scanned, misspelling in .txt was ignored"
+          echo "PASS"

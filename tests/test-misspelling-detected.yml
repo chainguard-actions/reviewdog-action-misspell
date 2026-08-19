@@ -1,0 +1,41 @@
+name: Test misspelling detection
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      # Create a file with known misspellings inside the workspace
+      - name: Create file with misspellings
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/test-misspelled"
+          echo "Determinisitic result is important." > "$GITHUB_WORKSPACE/test-misspelled/bad.txt"
+          echo "This is a seperate issue." >> "$GITHUB_WORKSPACE/test-misspelled/bad.txt"
+
+      - name: Run action expecting misspellings to be found
+        id: action
+        uses: .
+        with:
+          github_token: ${{ github.token }}
+          path: test-misspelled
+          pattern: '*.txt'
+          reporter: local
+          filter_mode: nofilter
+          fail_level: error
+          level: error
+        # We expect this to exit 1 because misspellings are found
+        continue-on-error: true
+
+      - name: Assert misspellings were detected (action should have failed)
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "action outcome: $OUTCOME"
+          if [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: misspellings were detected as expected"
+          else
+            echo "FAIL: expected action to fail due to misspellings, but outcome was: $OUTCOME"
+            exit 1
+          fi

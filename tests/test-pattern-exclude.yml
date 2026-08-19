@@ -1,0 +1,34 @@
+name: Test pattern and exclude inputs
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      # Create files: one with misspelling (excluded), one clean (included)
+      - name: Create test files
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/test-pattern/vendor"
+          # This file has misspellings but will be excluded
+          echo "Determinisitic result is important." > "$GITHUB_WORKSPACE/test-pattern/vendor/bad.txt"
+          # This file is clean and will be scanned
+          echo "This file is clean and correct." > "$GITHUB_WORKSPACE/test-pattern/clean.txt"
+
+      - name: Run action with exclude pattern to skip vendor directory
+        id: action
+        uses: .
+        with:
+          github_token: ${{ github.token }}
+          path: test-pattern
+          pattern: '*.txt'
+          exclude: '*/vendor/*'
+          reporter: local
+          filter_mode: nofilter
+          fail_level: error
+          level: error
+
+      - name: Assert excluded directory misspellings did not cause failure
+        run: |
+          echo "PASS: vendor directory was excluded, misspellings there did not cause failure"

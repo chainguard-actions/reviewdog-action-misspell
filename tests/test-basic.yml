@@ -1,0 +1,31 @@
+name: Test basic usage - no misspellings
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      # Create a clean file with no misspellings inside the workspace
+      - name: Create clean test file
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/test-clean"
+          echo "This is a clean file with correct spelling." > "$GITHUB_WORKSPACE/test-clean/clean.txt"
+          echo "Everything here is spelled correctly." >> "$GITHUB_WORKSPACE/test-clean/clean.txt"
+
+      - id: action
+        uses: .
+        with:
+          github_token: ${{ github.token }}
+          path: test-clean
+          pattern: '*.txt'
+          reporter: local
+          filter_mode: nofilter
+          fail_level: none
+          level: warning
+
+      - name: Assert action completed successfully
+        run: |
+          echo "Action completed with no errors (exit code 0)"
+          echo "PASS: misspell ran successfully on clean content"
