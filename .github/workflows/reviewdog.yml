@@ -1,0 +1,20 @@
+name: reviewdog
+on: [pull_request]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  misspell:
+    name: runner / misspell
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code.
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: misspell
+        uses: ./
+        with:
+          github_token: ${{ secrets.github_token }}
+          locale: "US"
+          pattern: "*.md"
