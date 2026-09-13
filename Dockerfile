@@ -1,0 +1,23 @@
+FROM debian:bookworm-slim@sha256:88200866dfff7ea7f5cbcb6ec7c8a701889efe6fe859fe64d6990e4b07ea4171
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        ca-certificates \
+        git \
+        wget \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV REVIEWDOG_VERSION=v0.21.1
+ENV MISSPELL_VERSION=v0.8.0
+
+RUN wget -q -O /tmp/install-reviewdog.sh https://raw.githubusercontent.com/reviewdog/reviewdog/fd59714416d6d9a1c0692d872e38e7f8448df4fc/install.sh \
+    && sh /tmp/install-reviewdog.sh -b /usr/local/bin/ ${REVIEWDOG_VERSION} \
+    && rm /tmp/install-reviewdog.sh
+RUN wget -q -O /tmp/install-misspell.sh https://raw.githubusercontent.com/golangci/misspell/master/install-misspell.sh \
+    && sh /tmp/install-misspell.sh -b /usr/local/bin/ "${MISSPELL_VERSION}" \
+    && rm /tmp/install-misspell.sh
+
+COPY entrypoint.sh /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
