@@ -1,0 +1,4 @@
+This file contains British English spellings.
+The colour of the sky is blue.
+We must honour our commitments.
+The behaviour of the system is correct.
