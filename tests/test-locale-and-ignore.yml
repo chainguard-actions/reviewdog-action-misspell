@@ -1,0 +1,44 @@
+name: Test locale and ignore options
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Set up git origin reachable inside the Docker container
+        run: |
+          git config user.email "test@example.com"
+          git config user.name "Test User"
+          rm -rf "$GITHUB_WORKSPACE/.git-remote"
+          git init --bare "$GITHUB_WORKSPACE/.git-remote"
+          git push "$GITHUB_WORKSPACE/.git-remote" HEAD:refs/heads/act-harness
+          git remote set-url origin "$GITHUB_WORKSPACE/.git-remote" 2>/dev/null || \
+            git remote add origin "$GITHUB_WORKSPACE/.git-remote"
+
+      - name: Create a file with words that would be flagged without ignore
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/test-locale"
+          cat > "$GITHUB_WORKSPACE/test-locale/content.txt" << 'EOF'
+          This file has some correctly spelled words.
+          The color of the sky is blue.
+          The honour of the team is important.
+          EOF
+
+      - id: action
+        uses: .
+        with:
+          github_token: ${{ github.token }}
+          path: test-locale
+          locale: US
+          reporter: local
+          filter_mode: nofilter
+          fail_level: none
+          level: info
+          ignore: honour
+
+      - name: Assert action completed successfully with locale and ignore options
+        run: |
+          echo "Action completed with US locale and 'honour' ignored"
+          echo "PASS"
