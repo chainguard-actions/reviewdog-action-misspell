@@ -1,0 +1,51 @@
+name: Test pattern filtering
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Set up git origin reachable inside the Docker container
+        run: |
+          git config user.email "test@example.com"
+          git config user.name "Test User"
+          rm -rf "$GITHUB_WORKSPACE/.git-remote"
+          git init --bare "$GITHUB_WORKSPACE/.git-remote"
+          git push "$GITHUB_WORKSPACE/.git-remote" HEAD:refs/heads/act-harness
+          git push "$GITHUB_WORKSPACE/.git-remote" --tags
+          git remote set-url origin "$GITHUB_WORKSPACE/.git-remote" 2>/dev/null || \
+            git remote add origin "$GITHUB_WORKSPACE/.git-remote"
+
+      - name: Create files - misspellings in .md, clean .txt
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/test-pattern"
+          # This .md file has misspellings but should NOT be scanned
+          cat > "$GITHUB_WORKSPACE/test-pattern/bad.md" << 'EOF'
+          This documment has misspellings that should be ignored by pattern filter.
+          The recieve function is importent.
+          EOF
+          # This .txt file is clean and WILL be scanned
+          cat > "$GITHUB_WORKSPACE/test-pattern/good.txt" << 'EOF'
+          This file is correctly spelled.
+          The quick brown fox jumps over the lazy dog.
+          EOF
+
+      - id: action
+        uses: .
+        with:
+          github_token: ${{ github.token }}
+          reporter: local
+          path: ./test-pattern
+          pattern: '*.txt'
+          filter_mode: nofilter
+          fail_level: error
+          level: error
+
+      - name: Assert action succeeded - only .txt files scanned, which are clean
+        run: |
+          echo "Action completed successfully - pattern filter correctly excluded .md files with misspellings"
+          echo "PASS"

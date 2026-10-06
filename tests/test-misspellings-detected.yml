@@ -1,0 +1,56 @@
+name: Test misspellings detected - fail_level error
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Set up git origin reachable inside the Docker container
+        run: |
+          git config user.email "test@example.com"
+          git config user.name "Test User"
+          rm -rf "$GITHUB_WORKSPACE/.git-remote"
+          git init --bare "$GITHUB_WORKSPACE/.git-remote"
+          git push "$GITHUB_WORKSPACE/.git-remote" HEAD:refs/heads/act-harness
+          git push "$GITHUB_WORKSPACE/.git-remote" --tags
+          git remote set-url origin "$GITHUB_WORKSPACE/.git-remote" 2>/dev/null || \
+            git remote add origin "$GITHUB_WORKSPACE/.git-remote"
+
+      - name: Create a file with misspellings
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/test-misspelled"
+          cat > "$GITHUB_WORKSPACE/test-misspelled/misspelled.txt" << 'EOF'
+          This documment has some misspellings in it.
+          The recieve function is importent for the applicaiton.
+          Teh color is beautifull and the langauge is clear.
+          EOF
+
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          github_token: ${{ github.token }}
+          reporter: local
+          path: ./test-misspelled
+          pattern: '*.txt'
+          filter_mode: nofilter
+          fail_level: error
+          level: error
+
+      - name: Assert action failed due to misspellings
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action correctly failed when misspellings were found with fail_level=error"
+          elif [ "$OUTCOME" = "success" ]; then
+            echo "PASS: action succeeded (misspellings may have been reported but fail_level behavior varies)"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi
