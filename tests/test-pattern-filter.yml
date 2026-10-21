@@ -1,0 +1,32 @@
+name: Test pattern filters target files
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Create files
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/misspell-target"
+          printf 'This sentence has a langauge misspelling.\n' > "$GITHUB_WORKSPACE/misspell-target/bad.txt"
+          printf 'This sentence has correct language.\n' > "$GITHUB_WORKSPACE/misspell-target/good.md"
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          path: misspell-target
+          pattern: '*.md'
+          reporter: local
+          filter_mode: nofilter
+          fail_level: any
+      - name: Assert misspelled non-matching file was skipped
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" != "success" ]; then
+            echo "FAIL: expected success since only *.md files are checked"
+            exit 1
+          fi
+          echo "PASS"
