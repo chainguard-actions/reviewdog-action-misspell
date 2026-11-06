@@ -18,6 +18,7 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 | v1.30.2 | [`v1.30.2`](https://github.com/chainguard-actions/reviewdog-action-misspell/tree/v1.30.2) | [`ce198e1`](https://github.com/reviewdog/action-misspell/commit/ce198e1db0d029be165f2d3e809c1a42353446b0) | [`HARDENING.md`](https://github.com/chainguard-actions/reviewdog-action-misspell/blob/v1.30.2/HARDENING.md) |
 | v1.30.3 | [`v1.30.3`](https://github.com/chainguard-actions/reviewdog-action-misspell/tree/v1.30.3) | [`3467363`](https://github.com/reviewdog/action-misspell/commit/3467363dab5b42db2b1372c5fd2b1771fea2ea48) | [`HARDENING.md`](https://github.com/chainguard-actions/reviewdog-action-misspell/blob/v1.30.3/HARDENING.md) |
 | v1.30.4 | [`v1.30.4`](https://github.com/chainguard-actions/reviewdog-action-misspell/tree/v1.30.4) | [`840bfbe`](https://github.com/reviewdog/action-misspell/commit/840bfbe9f804da9afb0bd739dc4689012f3fdd2d) | [`HARDENING.md`](https://github.com/chainguard-actions/reviewdog-action-misspell/blob/v1.30.4/HARDENING.md) |
+| v1.30.5 | [`v1.30.5`](https://github.com/chainguard-actions/reviewdog-action-misspell/tree/v1.30.5) | [`f424fed`](https://github.com/reviewdog/action-misspell/commit/f424fed50ff8c448c1100c2d35d5d72a8ad08e49) | [`HARDENING.md`](https://github.com/chainguard-actions/reviewdog-action-misspell/blob/v1.30.5/HARDENING.md) |
 
 ## Privacy
 
