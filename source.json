@@ -1,6 +1,11 @@
 {
   "owner": "reviewdog",
   "repo": "action-misspell",
-  "version": "",
-  "url": "https://github.com/reviewdog/action-misspell"
+  "version": "v1.31.0",
+  "commit_sha": "c846b6b0996029d2d39540c8ffebebbd957072db",
+  "url": "https://github.com/reviewdog/action-misspell",
+  "policy_sha": "d636be7e43ef829af6e853da6b3c7566db9f72fe",
+  "test_policy_sha": "843adf9e4b8f85d0c08b27b9d0b09dd094b54702",
+  "test_agent_version": "2",
+  "harden_agent_version": "2"
 }

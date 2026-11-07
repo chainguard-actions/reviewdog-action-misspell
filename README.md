@@ -1,24 +1,111 @@
-# reviewdog/action-misspell
+# GitHub Action: Run misspell with reviewdog
 
-🐶 Run misspell with reviewdog on pull requests to improve code review experience.
+[![Docker Image CI](https://github.com/reviewdog/action-misspell/workflows/Docker%20Image%20CI/badge.svg)](https://github.com/reviewdog/action-misspell/actions)
+[![depup](https://github.com/reviewdog/action-misspell/workflows/depup/badge.svg)](https://github.com/reviewdog/action-misspell/actions?query=workflow%3Adepup)
+[![release](https://github.com/reviewdog/action-misspell/workflows/release/badge.svg)](https://github.com/reviewdog/action-misspell/actions?query=workflow%3Arelease)
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/reviewdog/action-misspell?logo=github&sort=semver)](https://github.com/reviewdog/action-misspell/releases)
+[![action-bumpr supported](https://img.shields.io/badge/bumpr-supported-ff69b4?logo=github&link=https://github.com/haya14busa/action-bumpr)](https://github.com/haya14busa/action-bumpr)
 
-Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at [https://github.com/reviewdog/action-misspell](https://github.com/reviewdog/action-misspell).
+This action runs [misspell](https://github.com/golangci/misspell) with
+[reviewdog](https://github.com/reviewdog/reviewdog) on pull requests to improve
+code review experience.
 
-## Versions
+[![sample annotation](https://user-images.githubusercontent.com/3797062/64926127-b8b0bc00-d834-11e9-97d5-5b6aa06dc573.png)](https://github.com/reviewdog/action-misspell/pull/1/files)
 
-| Version | Tag | Upstream commit | Hardening report |
-|---------|-----|-----------------|------------------|
-| v1 | [`v1`](https://github.com/chainguard-actions/reviewdog-action-misspell/tree/v1) | [`d642941`](https://github.com/reviewdog/action-misspell/commit/d6429416b12b09b4e2768307d53bef58d172e962) | — |
-| v1.27 | [`v1.27`](https://github.com/chainguard-actions/reviewdog-action-misspell/tree/v1.27) | [`d642941`](https://github.com/reviewdog/action-misspell/commit/d6429416b12b09b4e2768307d53bef58d172e962) | — |
-| v1.27.0 | [`v1.27.0`](https://github.com/chainguard-actions/reviewdog-action-misspell/tree/v1.27.0) | [`d642941`](https://github.com/reviewdog/action-misspell/commit/d6429416b12b09b4e2768307d53bef58d172e962) | [`HARDENING.md`](https://github.com/chainguard-actions/reviewdog-action-misspell/blob/v1.27.0/HARDENING.md) |
-| v1.28.0 | [`v1.28.0`](https://github.com/chainguard-actions/reviewdog-action-misspell/tree/v1.28.0) | [`ba7ac40`](https://github.com/reviewdog/action-misspell/commit/ba7ac4030fa6812f8c8b2d4e516af8bc99553c32) | [`HARDENING.md`](https://github.com/chainguard-actions/reviewdog-action-misspell/blob/v1.28.0/HARDENING.md) |
-| v1.29.0 | [`v1.29.0`](https://github.com/chainguard-actions/reviewdog-action-misspell/tree/v1.29.0) | [`da40ce4`](https://github.com/reviewdog/action-misspell/commit/da40ce414be6ce320a9322aa2bae10bd3b9e6ef3) | [`HARDENING.md`](https://github.com/chainguard-actions/reviewdog-action-misspell/blob/v1.29.0/HARDENING.md) |
-| v1.30.0 | [`v1.30.0`](https://github.com/chainguard-actions/reviewdog-action-misspell/tree/v1.30.0) | [`5f62a0a`](https://github.com/reviewdog/action-misspell/commit/5f62a0ac088400bd1a3283bbb109efc5a22e8171) | [`HARDENING.md`](https://github.com/chainguard-actions/reviewdog-action-misspell/blob/v1.30.0/HARDENING.md) |
-| v1.30.1 | [`v1.30.1`](https://github.com/chainguard-actions/reviewdog-action-misspell/tree/v1.30.1) | [`7cea3d5`](https://github.com/reviewdog/action-misspell/commit/7cea3d501cb3834c688e08c89ed77b71764d1784) | [`HARDENING.md`](https://github.com/chainguard-actions/reviewdog-action-misspell/blob/v1.30.1/HARDENING.md) |
-| v1.30.2 | [`v1.30.2`](https://github.com/chainguard-actions/reviewdog-action-misspell/tree/v1.30.2) | [`ce198e1`](https://github.com/reviewdog/action-misspell/commit/ce198e1db0d029be165f2d3e809c1a42353446b0) | [`HARDENING.md`](https://github.com/chainguard-actions/reviewdog-action-misspell/blob/v1.30.2/HARDENING.md) |
-| v1.30.3 | [`v1.30.3`](https://github.com/chainguard-actions/reviewdog-action-misspell/tree/v1.30.3) | [`3467363`](https://github.com/reviewdog/action-misspell/commit/3467363dab5b42db2b1372c5fd2b1771fea2ea48) | [`HARDENING.md`](https://github.com/chainguard-actions/reviewdog-action-misspell/blob/v1.30.3/HARDENING.md) |
-| v1.30.4 | [`v1.30.4`](https://github.com/chainguard-actions/reviewdog-action-misspell/tree/v1.30.4) | [`840bfbe`](https://github.com/reviewdog/action-misspell/commit/840bfbe9f804da9afb0bd739dc4689012f3fdd2d) | [`HARDENING.md`](https://github.com/chainguard-actions/reviewdog-action-misspell/blob/v1.30.4/HARDENING.md) |
-| v1.30.5 | [`v1.30.5`](https://github.com/chainguard-actions/reviewdog-action-misspell/tree/v1.30.5) | [`f424fed`](https://github.com/reviewdog/action-misspell/commit/f424fed50ff8c448c1100c2d35d5d72a8ad08e49) | [`HARDENING.md`](https://github.com/chainguard-actions/reviewdog-action-misspell/blob/v1.30.5/HARDENING.md) |
+## Inputs
+
+### `github_token`
+
+Optional. `${{ github.token }}` is used by default.
+
+### `locale`
+
+Optional. -locale flag of misspell. [`US`/`UK`]
+
+### `level`
+
+Optional. Report level for **reviewdog** [`info`,`warning`,`error`].
+It's the same as the `-level` flag of **reviewdog**.
+
+### `reporter`
+
+Optional. Reporter for **reviewdog** command [`github-pr-check`,`github-pr-review`].
+It's the same as the `-reporter` flag of reviewdog.
+
+### `ignore`
+
+Optional. Ignore (`-i`) a list of comma-separated words.  [`armor`] / [`armor,color`].
+
+### `path`
+
+Optional. Base directory to run misspell. Same as `[path]` of `find` command. Default: `.`
+
+Directories are separated by lines. e.g.:
+```yml
+path: |
+  doc
+  src
+```
+
+### `pattern`
+
+Optional. File patterns of target files. Same as `-name [pattern]` of `find` command. Default: `*`
+
+Patterns are separated by lines. e.g.:
+```yml
+pattern: |
+  *.py
+  *.sh
+```
+
+### `exclude`
+
+Optional. Exclude patterns of target files. Same as `-not -path [exclude]` of `find` command.
+e.g. `./.git/*`
+
+Patterns are separated by lines. e.g.:
+```yml
+exclude: |
+  ./.git/*
+  ./.cache/*
+```
+
+### `filter_mode`
+
+Optional. Filtering mode for the reviewdog command [`added`,`diff_context`,`file`,`nofilter`]. Default: `added`.
+
+### `fail_level`
+
+Optional. If set to `none`, always use exit code 0 for reviewdog.
+Otherwise, exit code 1 for reviewdog if it finds at least 1 issue with severity greater than or equal to the given level.
+Possible values: [`none`, `any`, `info`, `warning`, `error`]
+Default is `none`.
+
+### `fail_on_error`
+
+Deprecated, use `fail_level` instead.
+Optional. Exit code for reviewdog when errors are found [`true`,`false`]. Default: `false`.
+
+## Example usage
+
+### [.github/workflows/reviewdog.yml](.github/workflows/reviewdog.yml)
+
+```yml
+name: reviewdog
+on: [pull_request]
+jobs:
+  misspell:
+    name: runner / misspell
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code.
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: misspell
+        uses: reviewdog/action-misspell@9daa94af4357dddb6fd3775de806bc0a8e98d3e4 # v1.26.3
+        with:
+          github_token: ${{ secrets.github_token }}
+          locale: "US"
+```
 
 ## Privacy
 
