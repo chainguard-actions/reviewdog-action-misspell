@@ -1,0 +1,31 @@
+name: Test pattern input limits target files
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Add a non-matching file with typos
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/pattern-target"
+          cp tests/fixtures/clean/clean.md "$GITHUB_WORKSPACE/pattern-target/clean.md"
+          printf 'We will recieve it.\n' > "$GITHUB_WORKSPACE/pattern-target/typos.txt"
+      - id: action
+        uses: .
+        with:
+          path: pattern-target
+          pattern: '*.md'
+          reporter: local
+          filter_mode: nofilter
+          fail_level: any
+      - name: Assert only *.md files were checked
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" != "success" ]; then
+            echo "FAIL: expected success (typos.txt should not match pattern)"
+            exit 1
+          fi
+          echo "PASS"
